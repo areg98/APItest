@@ -1,4 +1,4 @@
-package com.swapi;
+package com.swapi.service;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;

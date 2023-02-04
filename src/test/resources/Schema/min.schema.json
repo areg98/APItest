@@ -1,0 +1,5 @@
+{
+  "$schema": "https://reqres.in/api/users?page=2",
+  "type": "number",
+  "minimum": 1
+}

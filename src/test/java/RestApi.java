@@ -1,8 +1,9 @@
 
-import com.swapi.BaseService;
+import com.swapi.service.BaseService;
 import io.restassured.filter.log.LogDetail;
 import org.testng.annotations.Test;
 
+import static com.swapi.constant.Urls.PEOPLE_URL;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public class RestApi {
@@ -10,7 +11,7 @@ public class RestApi {
 
     @Test
     public void getUrl() {
-        String basePath = "/people/1/";
+        String basePath = String.format(PEOPLE_URL,1);
 
         BaseService.get(basePath)
                 //.prettyPrint()
