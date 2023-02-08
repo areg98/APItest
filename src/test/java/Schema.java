@@ -9,8 +9,6 @@ public class Schema {
 
     @Test
     public void validates_min_schema_in_classpath() {
-
-
         String expectedJson = readLineByLineJava(MIN_JSON_PATH);
         assertThat(expectedJson, matchesJsonSchemaInClasspath("Schema/min.schema.json"));
     }

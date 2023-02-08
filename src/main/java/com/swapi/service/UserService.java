@@ -1,19 +1,36 @@
 package com.swapi.service;
 
-import com.swapi.pojo.UserData;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
-import java.util.List;
+import static com.swapi.constant.Urls.USER_URL;
 
-import static io.restassured.RestAssured.given;
-
-public class UserService extends BaseSpecifications {
-    public List<UserData> requestGet(String path){
-        return  given()
-                .when()
-                .get(path )
-                .then().log().all()
-                .extract()
-                .body()
-                .jsonPath().getList("userData", UserData.class);
+public class UserService extends BaseService {
+    public static Response getUsers(Integer pageNumber){
+        RequestSpecification requestSpecification = baseConfigRequest();
+        requestSpecification.queryParam("page",pageNumber);
+        requestSpecification.basePath(USER_URL);
+        return  get(requestSpecification);
     }
+
+    public static Response addUser(String name, String job){
+        RequestSpecification requestSpecification = baseConfigRequest();
+        requestSpecification.queryParam("name",name);
+        requestSpecification.queryParam("job", job);
+        return  post(requestSpecification);
+    }
+
+    public static Response updateUsers(String requestBody, Integer pageNum){
+        RequestSpecification requestSpecification = baseConfigRequest();
+        requestSpecification.body(requestBody);
+        return  put(requestSpecification, pageNum);
+    }
+
+
+    public static Response updateUserByPatch(String requestBody, Integer pageNum){
+        RequestSpecification requestSpecification = baseConfigRequest();
+        requestSpecification.body(requestBody);
+        return  patch(requestSpecification, pageNum);
+    }
+
 }
