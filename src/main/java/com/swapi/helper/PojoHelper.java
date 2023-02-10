@@ -1,7 +1,5 @@
 package com.swapi.helper;
 
-import com.swapi.pojo.UserUpdateResponse;
-import com.swapi.service.UserService;
 import io.restassured.response.Response;
 
 public class  PojoHelper <T>{

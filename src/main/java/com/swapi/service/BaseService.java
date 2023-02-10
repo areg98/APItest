@@ -31,8 +31,8 @@ public class BaseService {
         return requestSpecification.get();
     }
 
-    public static Response post(RequestSpecification requestSpecification) {
-        return requestSpecification.post(CREATE_USER_URL);
+    public static Response post(RequestSpecification requestSpecification, String basePath) {
+        return requestSpecification.post(basePath);
     }
 
     public static Response put(RequestSpecification requestSpecification, Integer pageNum ) {
@@ -43,12 +43,10 @@ public class BaseService {
         return requestSpecification.patch(String.format(UPDATE_USER_URL, pageNum));
     }
 
-    public static Response delete(String deletePath) {
+    public static Response delete(RequestSpecification requestSpecification,Integer userID) {
 
-        return RestAssured.given()
-                .baseUri(BASE_URL)
-                .contentType(ContentType.JSON)
-                .delete(deletePath);
+        return requestSpecification
+                .delete(String.format(UPDATE_USER_URL, userID));
     }
 }
 
