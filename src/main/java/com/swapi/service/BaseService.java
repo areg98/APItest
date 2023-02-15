@@ -1,17 +1,13 @@
 package com.swapi.service;
 
-import com.swapi.constant.Urls;
 import io.restassured.RestAssured;
-import io.restassured.config.ObjectMapperConfig;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-import static com.swapi.constant.Urls.CREATE_USER_URL;
 import static com.swapi.constant.Urls.UPDATE_USER_URL;
 import static com.swapi.utils.Configurations.BASE_URL;
 import static io.restassured.RestAssured.given;
-import static io.restassured.mapper.ObjectMapperType.GSON;
 
 public class BaseService {
 

@@ -3,6 +3,9 @@ package com.swapi.service;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.swapi.constant.Urls.*;
 
 public class UserService extends BaseService {
@@ -20,8 +23,10 @@ public class UserService extends BaseService {
 
     public static Response addUser(String name, String job) {
         RequestSpecification requestSpecification = baseConfigRequest();
-        requestSpecification.queryParam("name", name);
-        requestSpecification.queryParam("job", job);
+        Map<String, String> createUser =  new HashMap<>();
+        createUser.put("name", name);
+        createUser.put("job", job);
+        requestSpecification.body(createUser);
         return post(requestSpecification, CREATE_USER_URL);
     }
 
@@ -37,37 +42,39 @@ public class UserService extends BaseService {
         return get(requestSpecification);
     }
 
-    public static Response updateUsers(String requestBody, Integer pageNum) {
+    public static Response updateUsers(String name, String job, Integer pageNum) {
         RequestSpecification requestSpecification = baseConfigRequest();
-        requestSpecification.body(requestBody);
+        Map<String, String> jsonBody = new HashMap<>();
+        jsonBody.put("name", name);
+        jsonBody.put("job", job);
+        requestSpecification.body(jsonBody);
         return put(requestSpecification, pageNum);
     }
 
-    public static Response updateUserByPatch(String requestBody, Integer pageNum) {
+    public static Response updateUserByPatch(String name, String job, Integer userId) {
         RequestSpecification requestSpecification = baseConfigRequest();
-        requestSpecification.body(requestBody);
-        return patch(requestSpecification, pageNum);
+        Map<String, String> jsonBody = new HashMap<>();
+        jsonBody.put("name", name);
+        jsonBody.put("job", job);
+        requestSpecification.body(jsonBody);
+        return patch(requestSpecification, userId);
     }
 
     public static Response register(String email, String pass) {
-        String requestBody = "{\n" +
-                "    \"email\": \"" + email + "\",\n" +
-                "    \"password\": \"" + pass + "\"\n" +
-                "}";
-
         RequestSpecification requestSpecification = baseConfigRequest();
-        requestSpecification.body(requestBody);
+        Map<String, String> jsonBody = new HashMap<>();
+        jsonBody.put("email", email);
+        jsonBody.put("password", pass);
+        requestSpecification.body(jsonBody);
         return post(requestSpecification, REGISTER_URL);
     }
 
     public static Response register(String email) {
 
-        String requestBody = "{\n" +
-                "    \"email\": \"" + email + "\",\n" +
-                "}";
-
         RequestSpecification requestSpecification = baseConfigRequest();
-        requestSpecification.body(requestBody);
+        Map<String, String> jsonBody = new HashMap<>();
+        jsonBody.put("email", email);
+        requestSpecification.body(jsonBody);
         return post(requestSpecification, REGISTER_URL);
     }
 

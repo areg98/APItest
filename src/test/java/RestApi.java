@@ -1,6 +1,8 @@
-import com.swapi.helper.PojoHelper;
-import com.swapi.pojo.UserUpdateResponse;
+import com.swapi.helper.UserHelper;
+import com.swapi.pojo.UserCreateResponse;
+import com.swapi.pojo.UserResponse;
 import com.swapi.service.UserService;
+import com.swapi.utils.RandomString;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -83,11 +85,21 @@ public class RestApi {
 
     @Test
     public void addUser() {
-        UserService.addUser("Babken", "leader")
+        String name = RandomString.getAlphabeticString(10);
+        String job = "leader";
+        UserService.addUser(name, job)
                 .then()
-                .log().all()
                 .statusCode(201)
                 .body("id", isA(String.class));
+        UserCreateResponse userCreateResponse = UserHelper.createUser(name, job);
+        UserResponse userResponse = UserHelper.getUser(Integer.valueOf(userCreateResponse.getId()));
+
+        Assert.assertEquals(userResponse.getData().getFirstName(), name);
+
+        UserService.deleteUser(Integer.valueOf(userCreateResponse.getId()));
+
+
+
 
     }
 
@@ -95,17 +107,21 @@ public class RestApi {
     @Test
     public void updateUser() {
 
-        String requestBody = "{\n"
-                + "  \"name\": \"morpheus\",\n"
-                + "  \"job\": \"zion resident\"\n"
-                + "}";
+        UserCreateResponse userCreateResponse = UserHelper.createUser(RandomString.getAlphanumericString(10), "leader");
 
-        UserService.updateUsers(requestBody, 2)
+        String name = userCreateResponse.getName();
+        String job = "zion resident";
+        Integer userID = Integer.valueOf(userCreateResponse.getId());
+
+        UserService.updateUsers(name, job, userID)
                 .then()
-                .log().all()
-                .statusCode(200)
-                .body("name", equalTo("morpheus"),
-                        "job", equalTo("zion resident"));
+                .statusCode(200);
+
+        UserResponse userResponse = UserHelper.getUser(userID);
+
+        Assert.assertEquals(userResponse.getData().getFirstName(), name);
+        Assert.assertEquals(userResponse.getData().getId(), userID);
+        UserService.deleteUser(Integer.valueOf(userCreateResponse.getId()));
 
     }
 
@@ -114,32 +130,34 @@ public class RestApi {
     public void updateUserByPatch() {
         LocalDate date = LocalDate.now();
 
-        String requestBody = "{\n"
-                + "  \"name\": \"morpheus\",\n"
-                + "  \"job\": \"zion resident\"\n"
-                + "}";
+        UserCreateResponse userCreateResponse = UserHelper.createUser(RandomString.getAlphanumericString(10), "leader");
 
-        UserUpdateResponse userUpdateResponse = new PojoHelper<UserUpdateResponse>()
-                .customExtract(UserService.updateUserByPatch(requestBody, 2),
-                        UserUpdateResponse.class);
+        String name = userCreateResponse.getName();
+        String job = "zion resident";
+        Integer userID = Integer.valueOf(userCreateResponse.getId());
 
-        UserService.updateUserByPatch(requestBody, 2)
+        UserService.updateUserByPatch(name, job, userID)
                 .then()
-                .log().all()
-                .statusCode(200)
-                .body("name", equalTo("morpheus"),
-                        "job", equalTo("zion resident"));
+                .log().ifValidationFails()
+                .statusCode(200);
 
-        Assert.assertEquals(userUpdateResponse.getUpdatedAt().substring(0, 10), date.toString());
+        UserResponse userResponse = UserHelper.getUser(userID);
+
+        Assert.assertEquals(userResponse.getData().getFirstName(), name);
+        Assert.assertEquals(userResponse.getData().getId(), userID);
+        Assert.assertEquals(UserHelper.updateUserByPatch(name, job, userID).getUpdatedAt().substring(0, 10), date.toString());
+        UserService.deleteUser(Integer.valueOf(userCreateResponse.getId()));
     }
 
 
     @Test
     public void deleteUser() {
 
-        UserService.deleteUser(2)
+        UserCreateResponse userCreateResponse = UserHelper.createUser(RandomString.getAlphanumericString(10), "leader");
+
+        UserService.deleteUser(Integer.valueOf(userCreateResponse.getId()))
                 .then()
-                .log().all()
+                .log().ifValidationFails()
                 .statusCode(204);
     }
 
@@ -151,7 +169,8 @@ public class RestApi {
                 .log().all()
                 .statusCode(200)
                 .body("id", isA(Integer.class),
-                        "token", isA(String.class));;
+                        "token", isA(String.class));
+
     }
 
     @Test
@@ -159,8 +178,7 @@ public class RestApi {
 
         UserService.register("eve.holt@reqres.in")
                 .then()
-                .log().all()
-                .log().body()
+                .log().ifValidationFails()
                 .statusCode(400);
 
     }
@@ -170,7 +188,7 @@ public class RestApi {
 
         UserService.login("eve.holt@reqres.in", "pistol")
                 .then()
-                .log().all()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .body("token", isA(String.class));
 
@@ -181,7 +199,7 @@ public class RestApi {
 
         UserService.login("peter@klaven")
                 .then()
-                .log().all()
+                .log().ifValidationFails()
                 .statusCode(400);
 //                .body("error", equalTo("Missing password"));
 
