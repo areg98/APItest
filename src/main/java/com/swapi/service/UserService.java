@@ -9,6 +9,7 @@ import java.util.Map;
 import static com.swapi.constant.Urls.*;
 
 public class UserService extends BaseService {
+
     public static Response getUsers(Integer pageNumber) {
         RequestSpecification requestSpecification = baseConfigRequest();
         requestSpecification.basePath(String.format(USER_LIST_URL, pageNumber));

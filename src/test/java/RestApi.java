@@ -1,5 +1,7 @@
 import com.swapi.helper.UserHelper;
 import com.swapi.pojo.UserCreateResponse;
+import com.swapi.pojo.UserData;
+import com.swapi.pojo.UserListResponse;
 import com.swapi.pojo.UserResponse;
 import com.swapi.service.UserService;
 import com.swapi.utils.RandomString;
@@ -7,7 +9,9 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import static com.swapi.helper.PojoHelper.customExtract;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Every.everyItem;
 
@@ -18,8 +22,17 @@ public class RestApi {
     public void getUsersList() {
         UserService.getUsers(2)
                 .then()
+                .log().all()
                 .body("data.avatar", everyItem(isA(String.class)),
                         "data.email", everyItem(endsWith("@reqres.in")));
+
+
+    }
+
+    @Test
+    public void getUsersListWithPojo() {
+        List<UserData> userDataList = UserHelper.getUsers(2);
+        userDataList.forEach(x -> Assert.assertTrue(x.getAvatar().contains(x.getId().toString())));
 
     }
 
@@ -29,7 +42,7 @@ public class RestApi {
 
         UserService.getSingleUser(userID)
                 .then()
-                .log().all()
+                .log().ifValidationFails()
                 .statusCode(200)
                 .body("data.id", equalTo(userID),
                         "data.email", endsWith("@reqres.in"),
@@ -121,6 +134,7 @@ public class RestApi {
 
         Assert.assertEquals(userResponse.getData().getFirstName(), name);
         Assert.assertEquals(userResponse.getData().getId(), userID);
+
         UserService.deleteUser(Integer.valueOf(userCreateResponse.getId()));
 
     }
@@ -154,11 +168,16 @@ public class RestApi {
     public void deleteUser() {
 
         UserCreateResponse userCreateResponse = UserHelper.createUser(RandomString.getAlphanumericString(10), "leader");
+        int userID = Integer.valueOf(userCreateResponse.getId());
 
-        UserService.deleteUser(Integer.valueOf(userCreateResponse.getId()))
+        UserService.deleteUser(userID)
                 .then()
-                .log().ifValidationFails()
                 .statusCode(204);
+
+        UserService.getSingleUser(userID)
+                .then()
+                .statusCode(404);
+
     }
 
     @Test

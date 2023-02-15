@@ -1,10 +1,8 @@
 package com.swapi.helper;
 
-import com.swapi.pojo.UserCreateResponse;
-import com.swapi.pojo.UserData;
-import com.swapi.pojo.UserResponse;
-import com.swapi.pojo.UserUpdateResponse;
+import com.swapi.pojo.*;
 import com.swapi.service.UserService;
+import io.restassured.response.Response;
 
 import java.util.List;
 
@@ -12,10 +10,10 @@ import static com.swapi.helper.PojoHelper.customExtract;
 
 public class UserHelper {
 
+    /** prevent object creation */
     private UserHelper() {
     }
 
-    ;
 
     public static List<UserData> getUsers(Integer pageNumber) {
 //        return UserService.getUsers(pageNumber)
@@ -23,7 +21,11 @@ public class UserHelper {
 //                .extract()
 //                .body()
 //                .jsonPath().getList("userData", UserData.class);
-        return customExtract(UserService.getUsers(pageNumber),  UserData.class, "userData");
+        Response response = UserService.getUsers(pageNumber);
+        response.prettyPrint();
+        UserListResponse userListResponse = customExtract(UserService.getUsers(pageNumber),  UserListResponse.class);
+        return userListResponse.getUserDataList();
+//        return customExtract(UserService.getUsers(pageNumber),  UserData.class, "userData");
     }
 
 

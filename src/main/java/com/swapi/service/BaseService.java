@@ -4,6 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import io.restassured.config.ObjectMapperConfig;
+import static io.restassured.mapper.ObjectMapperType.GSON;
+import io.restassured.mapper.ObjectMapperType;
 
 import static com.swapi.constant.Urls.UPDATE_USER_URL;
 import static com.swapi.utils.Configurations.BASE_URL;
@@ -15,9 +18,8 @@ public class BaseService {
 
         return given()
                 .baseUri(BASE_URL)
-                .config(RestAssured.config())
-//                        .objectMapperConfig(new ObjectMapperConfig(GSON)))
-                .urlEncodingEnabled(false)
+                .config(RestAssured.config()
+                        .objectMapperConfig(new ObjectMapperConfig(ObjectMapperType.GSON)))
                         .contentType(ContentType.JSON);
 
     }
