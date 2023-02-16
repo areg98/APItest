@@ -10,22 +10,14 @@ import static com.swapi.helper.PojoHelper.customExtract;
 
 public class UserHelper {
 
-    /** prevent object creation */
+    /** --- prevent object creation --- */
     private UserHelper() {
     }
 
 
     public static List<UserData> getUsers(Integer pageNumber) {
-//        return UserService.getUsers(pageNumber)
-//                .then()
-//                .extract()
-//                .body()
-//                .jsonPath().getList("userData", UserData.class);
-        Response response = UserService.getUsers(pageNumber);
-        response.prettyPrint();
         UserListResponse userListResponse = customExtract(UserService.getUsers(pageNumber),  UserListResponse.class);
         return userListResponse.getUserDataList();
-//        return customExtract(UserService.getUsers(pageNumber),  UserData.class, "userData");
     }
 
 

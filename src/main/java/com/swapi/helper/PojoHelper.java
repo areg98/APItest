@@ -6,6 +6,10 @@ import java.lang.reflect.Type;
 
 public class PojoHelper<T> {
 
+    /** --- prevent object creation --- */
+    private PojoHelper() {
+    }
+
     public static <T> T customExtract(Response response, Class<T> _class) {
         return response
                 .then()

@@ -25,26 +25,34 @@ public class BaseService {
     }
 
     public static Response get(RequestSpecification requestSpecification) {
-        requestSpecification.log().all();
+        requestSpecification
+                .log().ifValidationFails();
         return requestSpecification.get();
     }
 
     public static Response post(RequestSpecification requestSpecification, String basePath) {
+        requestSpecification
+                .log().ifValidationFails();
         return requestSpecification.post(basePath);
     }
 
     public static Response put(RequestSpecification requestSpecification, Integer pageNum ) {
+        requestSpecification
+                .log().ifValidationFails();
         return requestSpecification.put(String.format(UPDATE_USER_URL, pageNum));
     }
 
     public static Response patch(RequestSpecification requestSpecification, Integer pageNum) {
+        requestSpecification
+                .log().ifValidationFails();
         return requestSpecification.patch(String.format(UPDATE_USER_URL, pageNum));
     }
 
     public static Response delete(RequestSpecification requestSpecification,Integer userID) {
+        requestSpecification
+                .log().ifValidationFails();
 
-        return requestSpecification
-                .delete(String.format(UPDATE_USER_URL, userID));
+        return requestSpecification.delete(String.format(UPDATE_USER_URL, userID));
     }
 }
 

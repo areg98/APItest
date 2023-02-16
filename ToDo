@@ -1,0 +1,28 @@
+Todo ---------------------------------------------------------------
+        ##########      ##           #####            ##
+            ##       ##    ##        ##    ##      ##    ##
+            ##      ##      ##       ##     ##    ##      ##
+            ##      ##     ##        ##     ##    ##     ##
+            ##       ##   ##         ##    ##      ##   ##
+            ##         ##            ######          ##
+ -------------------------------------------------------------------
+
+1. Write test cases
+
+	1. [getUsersList]
+		
+	2. [getUser]
+	3. [getUnknownUser]
+	4. [getResourcesList]
+	5. [getResource]
+	6. [getUnknownResource]
+	7. [addUser]
+	8. [updateUser]
+	9. [updateUserByPatch]
+	10. [deleteUser]	
+	11. [registerSuccess]	
+	12. [registerUnSuccess]
+	13. [loginSuccess]
+	14. [loginUnSuccess]
+
+2. Add class for constant info

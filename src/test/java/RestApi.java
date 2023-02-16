@@ -1,7 +1,6 @@
 import com.swapi.helper.UserHelper;
 import com.swapi.pojo.UserCreateResponse;
 import com.swapi.pojo.UserData;
-import com.swapi.pojo.UserListResponse;
 import com.swapi.pojo.UserResponse;
 import com.swapi.service.UserService;
 import com.swapi.utils.RandomString;
@@ -11,7 +10,6 @@ import org.testng.annotations.Test;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.swapi.helper.PojoHelper.customExtract;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Every.everyItem;
 
@@ -22,16 +20,27 @@ public class RestApi {
     public void getUsersList() {
         UserService.getUsers(2)
                 .then()
-                .log().all()
-                .body("data.avatar", everyItem(isA(String.class)),
-                        "data.email", everyItem(endsWith("@reqres.in")));
-
-
+                .statusCode(200)
+                .body(
+                        "data.id", everyItem(isA(Integer.class)),
+                        "data.email", everyItem(endsWith("@reqres.in")),
+                        "data.firstName", everyItem(isA(String.class)),
+                        "data.lastName", everyItem(isA(String.class)),
+                        "data.avatar", everyItem(isA(String.class)));
     }
+
 
     @Test
     public void getUsersListWithPojo() {
         List<UserData> userDataList = UserHelper.getUsers(2);
+
+        for (int i = 0; i < userDataList.size(); i++) {
+            System.out.println(userDataList.get(i));
+        }
+        userDataList.forEach(x -> Assert.assertEquals(x.getId().getClass(), Integer.class));
+        userDataList.forEach(x -> Assert.assertTrue(x.getEmail().contains("@reqres.in")));
+        userDataList.forEach(x -> Assert.assertEquals(x.getFirstName().getClass(), String.class));
+        userDataList.forEach(x -> Assert.assertEquals(x.getLastName().getClass(), String.class));
         userDataList.forEach(x -> Assert.assertTrue(x.getAvatar().contains(x.getId().toString())));
 
     }
@@ -42,7 +51,6 @@ public class RestApi {
 
         UserService.getSingleUser(userID)
                 .then()
-                .log().ifValidationFails()
                 .statusCode(200)
                 .body("data.id", equalTo(userID),
                         "data.email", endsWith("@reqres.in"),
@@ -56,7 +64,6 @@ public class RestApi {
 
         UserService.getSingleUser(userID)
                 .then()
-                .log().all()
                 .statusCode(404);
     }
 
@@ -64,7 +71,6 @@ public class RestApi {
     public void getResourcesList() {
         UserService.getResourcesList()
                 .then()
-                .log().all()
                 .body("data.id", everyItem(isA(Integer.class)),
                         "data.name", everyItem(isA(String.class)),
                         "data.year", everyItem(isA(Integer.class)),
@@ -77,7 +83,6 @@ public class RestApi {
     public void getResource() {
         UserService.getSingleResources(2)
                 .then()
-                .log().all()
                 .body("data.id", isA(Integer.class),
                         "data.name", isA(String.class),
                         "data.year", isA(Integer.class),
@@ -90,7 +95,6 @@ public class RestApi {
     public void getUnknownResource() {
         UserService.getSingleResources(23)
                 .then()
-                .log().all()
                 .statusCode(404);
 
     }
@@ -110,9 +114,6 @@ public class RestApi {
         Assert.assertEquals(userResponse.getData().getFirstName(), name);
 
         UserService.deleteUser(Integer.valueOf(userCreateResponse.getId()));
-
-
-
 
     }
 
@@ -152,7 +153,6 @@ public class RestApi {
 
         UserService.updateUserByPatch(name, job, userID)
                 .then()
-                .log().ifValidationFails()
                 .statusCode(200);
 
         UserResponse userResponse = UserHelper.getUser(userID);
@@ -168,7 +168,7 @@ public class RestApi {
     public void deleteUser() {
 
         UserCreateResponse userCreateResponse = UserHelper.createUser(RandomString.getAlphanumericString(10), "leader");
-        int userID = Integer.valueOf(userCreateResponse.getId());
+        int userID = Integer.parseInt(userCreateResponse.getId());
 
         UserService.deleteUser(userID)
                 .then()
@@ -185,7 +185,6 @@ public class RestApi {
 
         UserService.register("eve.holt@reqres.in", "pistol")
                 .then()
-                .log().all()
                 .statusCode(200)
                 .body("id", isA(Integer.class),
                         "token", isA(String.class));
@@ -197,7 +196,6 @@ public class RestApi {
 
         UserService.register("eve.holt@reqres.in")
                 .then()
-                .log().ifValidationFails()
                 .statusCode(400);
 
     }
@@ -207,7 +205,6 @@ public class RestApi {
 
         UserService.login("eve.holt@reqres.in", "pistol")
                 .then()
-                .log().ifValidationFails()
                 .statusCode(200)
                 .body("token", isA(String.class));
 
@@ -218,9 +215,8 @@ public class RestApi {
 
         UserService.login("peter@klaven")
                 .then()
-                .log().ifValidationFails()
-                .statusCode(400);
-//                .body("error", equalTo("Missing password"));
+                .statusCode(400)
+                .body("error", equalTo("Missing password"));
 
     }
 

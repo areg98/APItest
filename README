@@ -23,20 +23,91 @@ This will run all the test cases and display the results on your console.
 Test Cases
 The test cases in this project cover the following scenarios:
 
-[getUsersList]
-[getUser]
-[getUnknownUser]
-[getResourcesList]
-[getResource]
-[getUnknownResource]
-[addUser]
-[updateUser]
-[updateUserByPatch]
-[deleteUser]
-[registerSuccess]
-[registerUnSuccess]
-[loginSuccess]
-[loginUnSuccess]
+1. [getUsersList]
+
+		1. Check status code to be 200
+		2. Check data types.
+		3. Check email format
+
+	2. [getUser]
+
+		1. Check status code to be 200
+		2. Check data types.
+		3. Check email format
+
+	3. [getUnknownUser]
+
+		1. Check status code to be 404
+		2. Check Error message
+
+	4. [getResourcesList]
+
+		1. Check status code to be 200
+		2. Check data types
+		3. Check color format
+
+	5. [getResource]
+
+		1. Check status code to be 200
+		2. Check data types
+		3. Check color format
+
+	6. [getUnknownResource]
+
+		1. Check status code to be 404
+		2. Check Error message
+
+	7. [addUser]
+
+		1. Check status code to be 201
+		2. Check data types
+		3. Check is user added using get method
+		4. Check request with incorrect body
+
+	8. [updateUser]
+
+		1. Check status code to be 200
+		2. Check data types
+		3. Check is user apdated using get method
+		4. Check request with incorrect body
+
+
+	9. [updateUserByPatch]
+
+		1. Check status code to be 200
+		2. Check data types
+		3. Check is user apdated using get method
+		4. Check request with incorrect body
+
+	10. [deleteUser]
+
+		1. Check status code to be 204
+		2. Check if user deleted using get method
+
+	11. [registerSuccess]
+
+		1. Check status code to be 200
+		2. Check data types
+		3. Check register with invalid email
+		4. Check register with incorrect body
+		5. Check is registered using get method
+
+	12. [registerUnSuccess]
+
+		1. Check status code to be 400
+		2. Check error message to be "Missing password"
+
+	13. [loginSuccess]
+
+		1. Check status code to be 200
+		2. Check token length to be 17
+		3. Check login with incorrect email
+		4. Check login with incorrect password
+
+	14. [loginUnSuccess]
+
+		1. Check status code to be 400
+		2. Check error message to be "Missing password"
 
 
 You can find the implementation details of each test case in the src/test/java directory.
