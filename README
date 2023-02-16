@@ -68,7 +68,7 @@ The test cases in this project cover the following scenarios:
 
 		1. Check status code to be 200
 		2. Check data types
-		3. Check is user apdated using get method
+		3. Check is user updated using get method
 		4. Check request with incorrect body
 
 
